@@ -20,7 +20,6 @@ setup(
         ('share/' + package_name + '/config', ['config/yahboom_driver_params.yaml']),
         ('share/' + package_name + '/config', ['config/ekf.yaml']),
         ('share/' + package_name + '/config', ['config/hbot.rviz']),
-        ('share/' + package_name + '/config', ['config/hbot.urdf']),
         ('share/' + package_name + '/config', ['config/carto_mapping.lua']),
         # Pre-built sample maps (used by slam:=False localization mode; the
         # hbot_house_sim map is built from the Gazebo world - see

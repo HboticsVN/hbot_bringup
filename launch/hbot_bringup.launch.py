@@ -147,9 +147,12 @@ def generate_launch_description():
     description='Whether to respawn if a node crashes. Applied when composition is disabled.'
   )
 
+  # Real-robot description: TF frames only (base_footprint, base_link, laser,
+  # imu_link), generated from hbot_description's hbot.urdf.xacro - the same
+  # source as the Gazebo model (hbot_sim.urdf), so the laser pose can't drift.
   urdf_path = os.path.join(
-    get_package_share_directory('hbot_bringup'),
-    'config', 'hbot.urdf')
+    get_package_share_directory('hbot_description'),
+    'urdf', 'hbot.urdf')
   with open(urdf_path, 'r') as infp:
     robot_description = infp.read()
 

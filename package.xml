@@ -7,6 +7,7 @@
   <maintainer email="huyhust13@gmail.com">root</maintainer>
   <license>TODO: License declaration</license>
 
+  <exec_depend>hbot_description</exec_depend>
   <exec_depend>twist_mux</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
