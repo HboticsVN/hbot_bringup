@@ -48,7 +48,7 @@ Run-time requirement on the Pi: `ros-humble-xacro`. It is an `exec_depend` of
 `hbot_description`, so `rosdep install --from-paths src` (docs/dev_guide.md)
 installs it; check with `ros2 pkg prefix xacro`.
 
-## Step 2: Driver wheel track = the model's track
+## Step 2: Driver wheels = the model's wheels
 
 `config/yahboom_driver_params.yaml`:
 
@@ -61,11 +61,20 @@ into wheel speeds (`v ± ω·track/2`) and to integrate odometry
 (`Δθ = (Δs_r − Δs_l) / track`). With the old 0.2 on a 0.190 m robot, every turn
 was under-reported by ~5 % and the robot turned ~5 % more than commanded.
 
-`hbot_description`'s `test_driver_wheel_track_matches` now passes; it fails
-whenever these two values drift apart again.
+The wheel diameter follows the same rule. `hbot_geometry.yaml` now has the
+measured `wheels.radius: 0.03375`, so the driver has
 
-`wheel_diameter` stays at the nominal 0.065 (the CAD tyre is 0.0674): measure
-it on the robot before changing it, then change it in both files.
+```yaml
+wheel_diameter: 0.0675  # measured; = 2 x hbot_description config/hbot_geometry.yaml wheels.radius
+```
+
+(was the nominal 0.065; the CAD tyre is 0.0674). The driver uses it both to
+turn `/cmd_vel` into wheel rpm and to turn encoder ticks into distance, so
+with 0.065 the robot drove ~3.8 % faster than commanded and odometry
+under-reported distance by ~3.7 %.
+
+`test_driver_wheels_match` in `hbot_description` checks both values: it fails
+whenever `wheel_track` or `wheel_diameter` drifts from the geometry YAML.
 
 ## Step 3: Validate
 
