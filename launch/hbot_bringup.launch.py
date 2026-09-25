@@ -147,14 +147,17 @@ def generate_launch_description():
     description='Whether to respawn if a node crashes. Applied when composition is disabled.'
   )
 
-  # Real-robot description: TF frames only (base_footprint, base_link, laser,
-  # imu_link), generated from hbot_description's hbot.urdf.xacro - the same
-  # source as the Gazebo model (hbot_sim.urdf), so the laser pose can't drift.
-  urdf_path = os.path.join(
-    get_package_share_directory('hbot_description'),
-    'urdf', 'hbot.urdf')
-  with open(urdf_path, 'r') as infp:
-    robot_description = infp.read()
+  # Real-robot description: robot_state_publisher from hbot_description,
+  # which expands hbot.urdf.xacro (use_sim:=false) at launch - the same xacro
+  # and config/hbot_geometry.yaml as the Gazebo model, so the TF tree can't
+  # drift between sim and hardware. See hbot_description/docs/robot_description.md.
+  robot_description_launch = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource(os.path.join(
+      get_package_share_directory('hbot_description'),
+      'launch', 'description.launch.py')),
+    launch_arguments={'use_sim': 'false',
+                      'use_sim_time': use_sim_time}.items(),
+  )
 
   # Lidar node, picked by the LIDAR_MODEL env var (see declaration above).
   # It only ever runs on real hardware - it lives inside `hardware_nodes`,
@@ -215,16 +218,9 @@ def generate_launch_description():
   hardware_actions = []
   if lidar_node is not None:
     hardware_actions.append(lidar_node)
-  hardware_actions.append(
-    # Robot description
-    Node(
-      package='robot_state_publisher',
-      executable='robot_state_publisher',
-      name='robot_state_publisher',
-      parameters=[{'use_sim_time': use_sim_time,
-          'robot_description': robot_description}]
-    )
-  )
+  # Robot description. In simulation, hbot_simulation's hbot_house.launch.py
+  # runs its own robot_state_publisher (with the Gazebo model).
+  hardware_actions.append(robot_description_launch)
   hardware_nodes = GroupAction(
     condition=UnlessCondition(simulation_mode),
     actions=hardware_actions

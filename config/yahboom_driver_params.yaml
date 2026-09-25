@@ -4,7 +4,7 @@ hbot_driver_yahboom_node:
     timeout: 0.1
     debug: false
     wheel_diameter: 0.065
-    wheel_track: 0.2
+    wheel_track: 0.19      # measured; must match hbot_description config/hbot_geometry.yaml wheels.track
     wheel_base: 0.15
     gear_ratio: 56
     encoder_resolution: 11
