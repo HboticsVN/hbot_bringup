@@ -74,7 +74,7 @@ def generate_launch_description():
   declare_headless_cmd = DeclareLaunchArgument(
     'headless',
     default_value='False',
-    description='In simulation mode, run gzserver only (no gzclient GUI)'
+    description='In simulation mode, run the gz sim server only (no GUI)'
   )
 
   declare_run_rviz_cmd = DeclareLaunchArgument(
@@ -150,7 +150,7 @@ def generate_launch_description():
   # Real-robot description: robot_state_publisher from hbot_description,
   # which expands hbot.urdf.xacro (use_sim:=false) at launch - the same xacro
   # and config/hbot_geometry.yaml as the Gazebo model, so the TF tree can't
-  # drift between sim and hardware. See hbot_description/docs/robot_description.md.
+  # drift between sim and hardware. See hbot_description/README.md.
   robot_description_launch = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(
       get_package_share_directory('hbot_description'),
@@ -318,7 +318,7 @@ def generate_launch_description():
   #
   # In simulation there is no base_bringup / twist_mux (and no teleop source
   # to arbitrate against), so Nav2's smoothed output must land straight on
-  # 'cmd_vel', which is what the Gazebo diff-drive plugin subscribes to -
+  # 'cmd_vel', which is what the gz sim DiffDrive system (via ros_gz_bridge) subscribes to -
   # hence the sim branch omits the SetRemap.
   bringup_cmd_group_real = GroupAction([
     SetRemap(src='cmd_vel_smoothed', dst='cmd_vel_nav_smoothed'),
