@@ -1,8 +1,18 @@
-# How hbot_bringup gets the robot description
+# hbot_bringup
+
+Central launch orchestration for HBOT: sim vs. real hardware, SLAM vs. localization, Nav2, and the driver + web dashboard entry point (`base_bringup.launch.py`).
+
+## Contents
+
+- [How hbot_bringup gets the robot description](#how-hbot_bringup-gets-the-robot-description)
+
+---
+
+## How hbot_bringup gets the robot description
 
 `hbot_bringup` no longer carries or reads a URDF of its own. The robot model
 lives in `hbot_description` (one xacro + `config/hbot_geometry.yaml`, see
-[`hbot_description/docs/robot_description.md`](../../hbot_description/docs/robot_description.md));
+[`hbot_description/README.md`](../hbot_description/README.md));
 bringup includes its launch file, and the driver parameters are kept in sync
 with its geometry.
 
@@ -10,7 +20,7 @@ Branch: `feat/standard-description` in `hbot_bringup` (and in `hbot_description`
 
 ---
 
-## Step 1: Real robot, `robot_state_publisher` via `description.launch.py`
+### Step 1: Real robot, `robot_state_publisher` via `description.launch.py`
 
 Before, `launch/hbot_bringup.launch.py` opened
 `hbot_description/urdf/hbot.urdf` and started its own
@@ -48,7 +58,7 @@ Run-time requirement on the Pi: `ros-humble-xacro`. It is an `exec_depend` of
 `hbot_description`, so `rosdep install --from-paths src` (docs/dev_guide.md)
 installs it; check with `ros2 pkg prefix xacro`.
 
-## Step 2: Driver wheels = the model's wheels
+### Step 2: Driver wheels = the model's wheels
 
 `config/yahboom_driver_params.yaml`:
 
@@ -76,7 +86,7 @@ under-reported distance by ~3.7 %.
 `test_driver_wheels_match` in `hbot_description` checks both values: it fails
 whenever `wheel_track` or `wheel_diameter` drifts from the geometry YAML.
 
-## Step 3: Validate
+### Step 3: Validate
 
 ```bash
 cd ~/Documents/03.MyProjects/hbot_ws
